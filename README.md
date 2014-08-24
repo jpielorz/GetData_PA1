@@ -49,7 +49,8 @@ This part is actually not required in the Rscript but for completeness I still l
 
 ### Downloading zip file from url (if it doesn't exist)
 
-```{r}
+
+```r
       setwd("~/coursera//getting_and_cleaning_data/data/")
       source_url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
       local_file <- "UCI_HAR_Dataset.zip"
@@ -75,7 +76,8 @@ This part is actually not required in the Rscript but for completeness I still l
 
 ### Unzipping and extracting the files to local directory
 
-```{r}
+
+```r
       filelist <- unzip("UCI_HAR_Dataset.zip", list=TRUE)
       filename <- filelist$Name
       unzip("UCI_HAR_Dataset.zip", files = filename, overwrite = TRUE)
@@ -98,7 +100,8 @@ If you play a bit around with the raw data. e.g. comparing their dimensions, you
 
 Using the filename vector created when unzipping the data, on can first cbind separately the three files for each - the training and the test - datasets. In a second step all data can be merged into one dataframe with rbind.
 
-```{r, cache=TRUE}
+
+```r
 # First the files in test directory
       test_files <- filename[16:18]
       testData <- do.call(cbind, lapply(test_files,read.table))
@@ -115,27 +118,31 @@ Using the filename vector created when unzipping the data, on can first cbind se
 
 The information we need for this is in the second column of the original features.txt file.
 
-```{r}
+
+```r
      features <- read.table(filename[2])
 ```
 
 Find all occurances of mean and std in features including upper and lower case. Use indices to extract all important feature names that we will need later in 4. for naming the variables properly.
 
-```{r}
+
+```r
       col_indices <- grep("([Mm]ean|[Ss]td)", features$V2)
       feature_names <- features[col_indices,2]
 ```
 
 Shift indices by one to take into account for subject column included with cbind() and add indices 1 and 563.
 
-```{r}
+
+```r
       col_indices_new <- col_indices +1
       col_indices_new <- c(1,col_indices_new,563)
 ```
 
 Apply vector with indices to combinedData to extract mean and standard deviations.
 
-```{r}
+
+```r
       extractedData <- combinedData[,col_indices_new]
 ```
 
@@ -145,32 +152,44 @@ Apply vector with indices to combinedData to extract mean and standard deviation
 The activity names can be found in the original activity_labels.txt file. It holds a table where each activity is labeled with a number. These numbers are not very descriptive but are used in the y_test.txt to match observations with activities. Now we substitute these numbers with the actual activity names.
 
 
-```{r}
+
+```r
       activity_labels <- read.table(filename[1])
       activities <- activity_labels[extractedData[,88],2]
       extractedData[,88] <- activities
       table(extractedData[,88])
 ```
 
+```
+## 
+##             LAYING            SITTING           STANDING 
+##               1944               1777               1906 
+##            WALKING WALKING_DOWNSTAIRS   WALKING_UPSTAIRS 
+##               1722               1406               1544
+```
+
 ## 4. Labeling the dataset with descriptive variable names
 
 For my personal taste the variable names from the features list are already descriptive, since I do prefer short names like "fBodyAcc-std()-Z" instead of "FastFourierTransformationBodyAccelerationStandardDeviationZ". To improve the readability even further (at least to my extent), I will drop the empty braces "()" and convert "-" to "_" in all variable names. 
 
-```{r}
+
+```r
       descriptive_names <- gsub("-", "_", gsub("\\()", "", feature_names))
 ```
 
 In the angle(.) expressions, I have to deal with the braces somehow, since otherwise they will be coerced to dots. I choose to drop the closing braces and convert the opening braces and commas to underscores.
 
 
-```{r}
+
+```r
       descriptive_names <- gsub(",|\\(", "_", gsub("\\)", "", descriptive_names))
 ```
 
 
 Now we have to add the variable names "subjectId" and "activities" for the first and last column of the extracted data and to assign the new variable names as column names for the extracted dataset.
 
-```{r}
+
+```r
       descriptive_names <- c("subjectId",descriptive_names,"activities")
       names(extractedData) <- descriptive_names
 ```
@@ -180,13 +199,15 @@ Now we have to add the variable names "subjectId" and "activities" for the first
 
 As a final step, we would like to create a second, independent tidy dataset with the average of each variable for each activity and each subject. For this we aggregate the dataset on activity and subject.
 
-```{r}
+
+```r
       tidyData <- aggregate(extractedData[,2:87], by = list(subjectId=extractedData$subjectId,activities=extractedData$activities),mean)
 ```
 
 Finally, we create a txt file with write.table() using row.names=FALSE for the submission.
 
-```{r}
+
+```r
       write.table(tidyData, "~/coursera/repos/GetData_PA1/tidy_data.txt", row.names = FALSE)
 ```
 
