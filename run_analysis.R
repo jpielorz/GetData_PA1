@@ -91,8 +91,8 @@ names(extractedData) <- descriptive_names
 
 # 5. Creating a second, independent tidy dataset
 
-tidyData <- aggregate(extractedData[,2:87], by = list(subjectId=extractedData$subjectId,activities=extractedData$activities),mean)
+tidyData <- aggregate(extractedData[,2:87], data=extractedData, by = list(subjectId=extractedData$subjectId,activities=extractedData$activities),mean)
 
 # Print output to txt file for submission
 
-write.table(tidyData, "tidy_data.txt", row.names = FALSE)
+write.table(tidyData, "~/coursera//repos//GetData_PA1/tidy_data.txt", row.names = FALSE)
