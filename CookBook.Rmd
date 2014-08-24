@@ -5,6 +5,53 @@ date: '2014-08-23'
 output: html_document
 ---
 
+## Data Source
+
+For this course work the raw data can be downloaded here: 
+
+<https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip>
+
+A full description of how it was obtained is available at the site where the data was obtained:
+
+<http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones>
+
+For more information about this dataset contact: activityrecognition@smartlab.ws
+
+## Reference
+
+Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+
+## Original Dataset Information
+
+The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data.
+
+The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain. See 'features_info.txt' for more details. 
+
+## Tidy Dataset Summary
+
+From the original dataset a new dataset "tidy_data.txt"" was created by applying the run_analysis.R script. A detailed description of how it was obtained can be found in README.md.
+
+## Description of the tidy dataset
+
+The tidy dataset consists of averages of each variable that contained mean and standard deviation in its name for each activity and each subject. Since there were 6 different possible activities and 30 different subjects, the resulting dataset contains 180 different rows. The number of columns is 88 due 86 different feature variables with mean and standard deviations in addition to one subjectId and one activity column.
 
 
+```{r}
+      tidy_data <- read.table("~/coursera//repos/GetData_PA1/tidy_data.txt", header = TRUE)
+      dim(tidy_data)
+```
 
+The complete list of variable names is
+
+```{r}
+      names(tidy_data)
+```
+
+
+The first variable is subjectId and consists of integers from 1 to 30. The second variable holds activities with the following levels:
+
+```{r}
+      levels(tidy_data$activities)
+```
+
+All other variables are averages for a given subject and activity. Details on the original variables and how they were obtained can be found in "feature_info.txt".
