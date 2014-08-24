@@ -26,8 +26,11 @@ The original work is described in:
 
 In the repo the following files can be found:
 
-* README.md: A README file with a description of all files and an explanation of the analysis files
 * CodeBook.md: A code book with a description of all the variables and summaries that were calculated
+* CodeBook.Rmd:  R Markdown version of file before
+* README.md: A README file with a description of all files and an explanation of the analysis files
+* README.Rmd: R Markdown version of file before
+* overview_files.png: png image with overview of raw data files
 * run_analysis.R: The R script for producing the tidy dataset
 * tidy_data.txt: A txt file with the tidy dataset
 
